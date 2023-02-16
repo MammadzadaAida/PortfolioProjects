@@ -1,5 +1,5 @@
 --MY PORTFOLIO PROJECT 1
---Covid 19 Data Exploration in SQL skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
+--Covid 19 (2023) Data Exploration in SQL skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
 
 Select *
 From CovidDeath
