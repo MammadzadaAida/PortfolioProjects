@@ -1,0 +1,118 @@
+--Write an SQL query to print the first three characters of FIRST_NAME from the employees table.
+
+SELECT
+    first_name,
+    substr(first_name, 1, 3)
+FROM
+    employees;
+
+--Write a SQL query to find those employees who earn less than the employee of ID 182. Return first name, last name and salary.
+
+SELECT
+    first_name,
+    last_name,
+    salary
+FROM
+    employees
+WHERE
+    salary < (
+        SELECT
+            salary
+        FROM
+            employees
+        WHERE
+            employee_id = 182 );
+
+--Write a SQL query to find full name (first and last name), job title, starting and ending date of last jobs of employees who worked without a commission percentage.
+
+SELECT
+    first_name
+    || ' '
+    || last_name full_name,
+    job_title,
+    start_date,
+    end_date
+FROM
+    employees     e
+    LEFT JOIN job_history   jh ON e.employee_id = jh.employee_id
+    LEFT JOIN jobs          j ON jh.job_id = j.job_id
+WHERE
+    commission_pct IS NULL
+    AND start_date IN (
+        SELECT
+            MAX(start_date)
+        FROM
+            job_history
+        GROUP BY
+            employee_id
+    )
+    AND end_date IN (
+        SELECT
+            MAX(end_date)
+        FROM
+            job_history
+        GROUP BY
+            employee_id );
+
+--Find the top 5 job titles with the highest average salary.
+
+SELECT
+    j.job_title,
+    AVG(e.salary)
+FROM
+    employees   e
+    LEFT JOIN jobs        j ON e.job_id = j.job_id
+GROUP BY
+    j.job_title
+ORDER BY
+    AVG(salary) DESC
+FETCH FIRST 5 ROW ONLY;
+
+
+--Write a SQL query to find a list of employees whose salary is more than 5000 or less than 2000. (write a query using UNION operator)
+
+SELECT   *
+FROM
+    employees
+WHERE
+    salary > 5000
+UNION
+SELECT    *
+FROM
+    employees
+WHERE
+    salary < 2000;
+
+
+--Create a matrix query to display the year of hire date, the employees count for that year based on departments 20, 50, 80, and 90, giving each column an appropriate heading. 
+ 
+SELECT
+    EXTRACT(YEAR FROM hire_date) "Year",
+    COUNT(decode(department_id, 20, employee_id)) "Dept 20",
+    COUNT(decode(department_id, 50, employee_id)) "Dept 50",
+    COUNT(decode(department_id, 80, employee_id)) "Dept 80",
+    COUNT(decode(department_id, 90, employee_id)) "Dept 90"
+FROM
+    employees
+GROUP BY
+    EXTRACT(YEAR FROM hire_date);
+
+
+--List the names and surnames of the employees for each  job title with department names by their salaries using dense_rank.
+
+SELECT
+    first_name,
+    last_name,
+    job_title,
+    department_name,
+    salary,
+    DENSE_RANK() OVER(
+        PARTITION BY department_name
+        ORDER BY
+            salary
+    ) dense_rank
+FROM
+    employees     e
+    LEFT JOIN jobs          j ON e.job_id = j.job_id
+    LEFT JOIN departments   d ON e.department_id = d.department_id;
+
