@@ -1,0 +1,97 @@
+# 1. Which matches a word containing vowels in it (a,ı,o,u,e,ə,i,ö,ü).
+
+import re
+
+abs='Aida Tural Sara Arif'
+a=re.findall('\w*[aıoueəiöü]\w*',abs)
+a
+
+# 2. Which matches a word containing vowels not at the start or end of the word (a,ı,o,u,e,ə,i,ö,ü).
+abs='aida Tural Sara arif'
+re.findall(r'\b[^\Waıoueəiöü]+[aıoueəiöü]+\w+[^\Waıoueəiöü]\b',abs)
+
+
+# 3. Checks for a number at the end of a given string
+
+re.findall('[0-9]\d','asd67')
+
+# 4. Which matches a word at the end of string, with optional question mark and exclamation point.
+
+re.findall(r'\w.*[?!]$', "sfdh?!")
+
+# 5. Replaces whitespaces with a tab and vice versa.
+
+abc="Aida has problem withPython"
+str1 = re.sub(" ", '\t', abc)
+print(str1)
+str2 = re.sub('\t', " ", abc)
+print(str2)
+
+# 6. Finds all words starting with 'ə' or 'ü' in a given string.
+ab='əida Turaə üara Ürif'
+a=re.findall(r'\b[üə]\w+',ab)
+a
+
+# 7. Removes all whitespaces from a string.
+
+abc= "Aida     has problem withPython"
+print(re.sub(" ", "",abc))
+
+# 8. Finds all words which have more than 4 characters in a string.
+
+print(re.findall(r'\w{4,}', 'Aida Tural Elovset'))
+
+# 9. Inserts spaces between words starting with capital letters.
+
+string="AidaHasProblemWithPython"
+a = re.findall(r'[A-Z][a-z]*',string)
+print(' '.join(a))
+
+# 10
+
+import re
+
+
+Nameage ="\
+Janice is 22 and Theon is 33 \
+Gabriel is 44 and Joey is 21\
+"
+
+name=re.findall(r'[A-Z][a-z]+',Nameage)
+age=re.findall(r'\d{2}',Nameage)
+
+dict(zip(name,age))
+
+re.findall(r'[A-z]+ is \d+',Nameage)
+
+# 11
+
+# a) 3 to 10 lowercase or uppercase letters, numbers
+# b) An @ symbol 
+# c) 2 to 10 lowercase and uppercase letters, numbers 
+# d) .
+# e) 2 to 4 lowercase and uppercase letters
+
+
+mails="""AGHJ678@gmail.com
+memmedzadeaide@gmail.com
+meow@gmail.com"""
+m=re.findall('[A-Za-z0-9]{3,10}@[A-Za-z0-9]{2,10}\.[A-Za-z]{2,4}',mails)
+
+m
+
+# 12
+
+# 1. (
+# 2. 3 numbers
+# 3. )
+# 4. Space
+# 5. numbers
+# 6. -
+# 7. numbers
+
+num="""(257) 563-7401, (111) 222-3333
+(1) 19-39, +994 012-13-32"""
+
+ver=re.findall(r'\(\d{3}\)\s\d+-\d+',num)
+ver
