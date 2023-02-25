@@ -1,0 +1,164 @@
+--1. According to the given diagram create STUDENTS , ACTIVITIES and SCHEDULE tables. (PK – PRIMARY KEY, FK – FOREIGN KEY, * - NOT NULL )
+
+Create Table students(
+s_id number 
+Constraint s_id_nn not null,
+Constraint s_id_pk PRIMARY KEY (s_id),
+first_name varchar2(255),
+last_name varchar2(255),
+phone_number varchar2(255),
+email varchar2(255)
+);
+
+
+Create Table activities(
+a_id number 
+Constraint a_id_nn not null,
+Constraint a_id_pk PRIMARY KEY (a_id),
+a_name varchar2(255) 
+Constraint a_name_nn not null,
+cost number
+Constraint cost_nn not null
+);
+
+Create Table schedule(
+s_id number,
+Constraint s_id_fk FOREIGN KEY (s_id)
+REFERENCES students (s_id),
+a_id number,
+Constraint a_id_fk FOREIGN KEY (a_id)
+REFERENCES activities (a_id),
+s_date date
+);
+
+--2. Insert data into students table from employees table.
+INSERT INTO students (
+    s_id,
+    first_name,
+    last_name,
+    phone_number,
+    email
+)
+    SELECT
+        employee_id,
+        first_name,
+        last_name,
+        phone_number,
+        email
+    FROM
+        employees;
+
+--3. Change phone number to ‘***’ for students with s_id > 200.
+UPDATE students
+SET
+    phone_number = '***'
+WHERE
+    s_id > 200;
+
+--4. Update first name and last names of students in Upper cases.
+UPDATE students
+SET
+    first_name = upper(first_name),
+    last_name = upper(last_name);
+
+--5. Based on the students table populated with the following data, update the email to 'DSA' for all records whose s_id is greater than 150.
+UPDATE students
+SET
+    email = 'DSA'
+WHERE
+    s_id > 150;
+
+--6. Create PROGRAMMERS table using records from EMPLOYEES where job_id contains ‘PROG’ substring.
+CREATE TABLE programmers
+    AS
+        ( SELECT
+            job_id
+        FROM
+            employees
+        WHERE
+            job_id LIKE '%PROG%'
+        )
+
+
+--7. Delete records from students table where s_id is between 150 and 160.
+DELETE FROM students
+WHERE
+    s_id BETWEEN 150 AND 160;
+
+--8.a) Insert some date into SCHEDULE, then truncate and see results.
+INSERT INTO schedule ( s_date ) VALUES ( '20-nov-1999' );
+
+SELECT
+    s_date
+FROM
+    schedule;
+
+TRUNCATE TABLE schedule;
+--b) Drop schedule table
+
+DROP TABLE schedule;
+
+--9. a)The first and the last days of the next year;
+SELECT add_months(TRUNC (SYSDATE, 'YEAR'),12) AS first_day, ADD_MONTHS ( round (SYSDATE, 'YEAR'),12  )-1  AS last_day FROM dual;
+
+--b) The first and the last days of the next month;
+SELECT add_months(TRUNC (SYSDATE, 'month'),1) AS first_day_, ADD_MONTHS ( round (SYSDATE, 'month'),1  )-1  AS last_day FROM dual;
+
+--c)The first and the last days of the previous month.
+SELECT add_months(TRUNC (SYSDATE, 'month'),-1) AS first_day_, trunc (SYSDATE, 'month')-1 AS last_day FROM dual;
+
+--10. Create a table named “Participants” which consists of first_name, last_name and salary (have to more than 10000).
+
+create table Participants as (select first_name,last_name,salary from employees where salary>10000);
+select * from participants;
+  
+  
+  
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+--1. Return the name of the employee with the lowest salary in department 90.
+select * from (SELECT first_name,department_id,salary,
+dense_rank ()
+over (partition by department_id order by salary) dense_rank from employees 
+where department_id=90)
+where dense_rank=1;
+
+
+--2. Select the department name, employee name, and salary of all employees who work in the human resources or purchasing departments. Compute a rank for each unique salary in both departments.
+select distinct d.department_name,e.first_name,e.salary, 
+dense_rank ()
+over (partition by department_name order by salary) dense_rank
+from employees e
+left join departments d on e.department_id=d.department_id
+where department_name in  ('Human Resources','Purchasing');
+
+
+--3. Select the 3 employees with minimum salary for department id 50.
+select * from (select first_name,salary,department_id,dense_rank() OVER (PARTITION BY department_id ORDER BY salary desc) dense_rank from employees where department_id=50) where dense_rank <=3;
+
+--4. Show first name, last name, salary and previously listed employee’s salary who works in “IT_PROG” over hire date.
+select first_name,last_name,salary,
+lag(salary)
+over (order by hire_date) previous_salary
+from employees
+where job_id='IT_PROG';
+
+--5. Display details of current job for employees who worked as IT Programmers in the past.
+select * from employees e
+left join job_history jh 
+on e.employee_id=jh.employee_id
+left join jobs j 
+on j.job_id=jh.job_id
+where jh.job_id='IT_PROG';
+
+--6. Make a copy of the employees table and update the salaries of the employees in the new table with the maximum salary in their departments.
+create table copy_emp as (select * from employees);
+
+update copy_emp ce set salary=(select max(salary) from employees e where ce.department_id=e.department_id);
+select * from copy_emp;
+
+--7. Make a copy of the employees table and update the salaries of the employees in the new table with a 30 percent increase.
+create table copy_emp as (select * from employees);
+update copy_emp ce set salary=salary*1.3;
