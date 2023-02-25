@@ -1,0 +1,122 @@
+#1. Create a Vehicle class with maxspeed and color instance attributes.
+
+class Vehicle():
+    def __init__(self, maxspeed, color):
+        self.maxspeed=maxspeed
+        self.color=color
+a=Vehicle(50, 'yellow')
+a.color
+
+#2. Create new method which prints maxspeed and the color for the given vehicle.
+class Vehicle():
+    def __init__(self, maxspeed, color):
+        self.maxspeed=maxspeed
+        self.color=color
+        self.showinfo()
+        
+    def showinfo(self):
+        print(self.maxspeed,self.color, sep=', ')
+        
+a=Vehicle(50, 'yellow')
+
+
+#3. Create child class Car that will inherit all of the variables and methods of the Vehicle class.
+class Car(Vehicle):
+    def __init__(self, maxspeed, color):
+        Vehicle.__init__(self,maxspeed,color)
+Kia=Car(250, 'brown')
+
+Kia.color
+
+#4. Define property that should have the same value for every class instance. Example : Every Vehicle should be white.
+
+class Vehicle:
+    color = 'white'
+    def __init__(self, maxspeed, year, capacity):
+        self.maxspeed = maxspeed
+        self.year = year
+        self.capacity = capacity
+    def fare(self):
+        return self.capacity*35
+
+#5. Create a Train child class that inherits from the Vehicle class. The default fare of
+#any vehicle is seating capacity * 35. If Vehicle is Train instance, we need to add
+#an extra 10% on full fare as a maintenance charge.
+
+class train(Vehicle):
+    def __init__ (self,maxspeed,year,capacity):
+        Vehicle.__init__(self,maxspeed,year,capacity)
+        
+    def add_fare(self):
+        return self.capacity*35*1.1
+
+#6. Determine which class a given car and train object belongs to .
+
+print(isinstance(Kia, Vehicle))
+
+
+----------------------------------------
+
+#1. Create Car Class that has 3 class attributes: year, mpg and speed.
+
+class Car():
+    def __init__ (self, year, mpg, speed):
+        self.year=year
+        self.mpg=mpg
+        self.speed=speed
+
+
+#2. Create 2 methods for the Car class:
+#Accelerate and break where the speed of the car changes when this methods are called.
+
+class Car():
+    def __init__ (self, year, mpg, speed):
+        self.year=year
+        self.mpg=mpg
+        self.speed=speed
+    
+    def accelerate(self):
+        self.speed=self.speed+10
+        
+    def car_break(self):
+        self.speed=self.speed-10
+        
+Kia=Car(2012, 15, 250)
+Kia.car_break()
+Kia.speed
+
+#3. Change all class attributes to instance attributes.
+
+class Car:
+    def __init__(self,year,mpg,speed):
+        self.year= year
+        self.mpg=mpg
+        self.speed = speed
+        
+Picanto=Car(2012, 20, 260)
+
+#4. Create a class vehicle and create inheritance between car and vehicle.
+
+class vehicle(Car):
+    def __init__(self):
+        pass
+    
+
+
+#5. Create a new class bus which has the same methods as car and inherits from Vehicle.
+
+class Bus(vehicle):
+    pass
+    
+
+#6. Change some of the instance attributes to the private attributes.
+class company():
+    name='QSS'
+    def worker(self):
+        workerList=['Aida', 'Mammadzada']
+class under_company(company):
+    def __init__ (self):
+        pass
+    
+a=company()
+print(a.name)
