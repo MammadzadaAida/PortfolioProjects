@@ -1,0 +1,169 @@
+# 1.Print First 10 natural numbers using while loop. 
+num=0
+while num<10:
+    num+=1
+    print(num,end=' ')
+    
+
+# 2.Display -10 to -1 using for loop.
+for y in range(-10,0):
+    print(y,end=' ')
+
+# 3.Write a Python program that prints all the numbers from 0 to 6 except 3 and 6. 
+for a in range(7):
+    if a==3 or a==6:
+        continue
+    else:
+        print(a,end=' ')
+
+# 4.Calculate the sum of all number between 1 and 111.
+cem=0
+for z in range(112):
+    cem=cem+z
+print(cem)
+
+
+# 5.Reverse the following list using for loop: list1 = [10, 20, 30, 40, 50]
+list1 = [10, 20, 30, 40, 50]
+reversed_list1=[]
+for a in list1:
+    reversed_list1=[a]+reversed_list1
+print(reversed_list1)
+
+# 6.Write a Python program to find those numbers which are divisible by 7 and 5, between 1500 and 2700 (both included).
+for x in range(1500,2701):
+    if x%7==0 and x%5==0:
+        print(x)
+
+# 7.Display a message “Done” after successful execution of for loop.
+for x in range(1500,1701):
+    if x%7==0 and x%5==0:
+        print(x)
+        
+print('Done')
+
+# 8.Write a Python program to create a lambda function that adds 15 to a given number passed in  
+# as an argument, also create a lambda function that multiplies argument x with argument y and print the result.
+z = lambda a : a + 15
+print(z(5))
+z = lambda x, y : x * y
+print(z(3, 9))
+
+# 9.Write a Python program to square and cube every number in a given list of integers using Lambda.
+nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+square_nums = list(map(lambda x: x ** 2, nums))
+cube_nums = list(map(lambda x: x ** 3, nums))
+print(square_nums,cube_nums)
+
+# 10.Write a lambda function that returns takes x as parameter and returns x+2. Then assign itto a variable named L.
+i=[1,2,4,5,6,7]
+ls=list(map(lambda x:x**2,i))
+lc=list(map(lambda x:x**3,i))
+print(ls,lc)
+
+
+# 11.Write a function which takes two arguments: a and b and returns the multiplication of them: 
+# a*b. Assign it to a variable named f.
+f=lambda a,b:a*b
+f(2,4)
+
+# 12.Write a Python program to add two given lists using map and lambda. 
+lst1= [4,8,12,9,23]
+
+list(map(lambda x:x+2,lst1))
+
+# 13.Write a map function that adds plus 5 to each item in the list.
+lst1= [4,8,12,9,23]
+list(map(lambda x:x+5,lst1))
+
+# 14.Write a map function that adds "Hello, " in front of each item in the list.
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+lst2=list(map(lambda x: "Hello " + x, lst1))
+print(lst2)
+
+
+# 15. Using map() function and len() function create a list that's consisted of lengths of each element in the first list.
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+lst2=list(map(lambda x:len(x),lst1))
+print(lst2)
+
+# 16. Using map() function and lambda add each elements of two lists together. Use a lambda  with two arguments.
+l1 = [2,6,4,3,6,7]
+l2 = [4,5,6,0,9,5]
+
+list(map(lambda x,y : x+y ,l1,l2))
+
+# 17. Using map() , lambda and count() functions create a list consisted of the number of occurrence of letter: a
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+list(map(lambda x :x.count('a'),lst1))
+
+
+# 18. Using map(), lambda and count() functions create a list consisted of the number of  occurrence of both letters: A and a\
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+list(map(lambda x:x.lower().count('a'),lst1))
+
+#19. Using filter() function filter the list so that only negative numbers are left.
+l=[-2,7,0,2,-4,-6]
+
+list(filter(lambda x:x<0, l))
+
+# 20. Using filter function, filter the even numbers so that only odd numbers are passed to the new list.
+l=[-2,7,0,2,-4,-6]
+
+list(filter(lambda x:x%2==0, l))
+
+# 21. Using filter() and list() functions and .lower() method filter all the vowels in a givenstring. 
+L="ASDghjkLTYUopvbnVBN"
+V = ('a', 'e', 'i', 'o', 'u')
+
+list(filter(lambda x:x.lower() in V,L))
+
+# 22.This time using filter() and list() functions filter all the positive integers in the string.
+l = ["-85","-47","5","0","1"]
+
+list(filter(lambda x:int(x)>0,l))
+
+# 23. Using map() and filter() functions add 2000 to the values below 8000.
+o=[1957,796,8521]
+m=list(filter(lambda x: x<8000,o))
+p=list(map(lambda x: x+2000,m))
+print(p)
+
+# 24.Write a Python program to count the even, odd numbers in a given array of integers using Lambda.
+l=[1,5,7,8,9,3,4,6,5]
+odd = len(list(filter(lambda x: x%2!=0,l )))
+even = len(list(filter(lambda x: x%2==0,l )))
+print(odd,even)
+
+# 25.Write a Python program to filter a given list whether the values in the list are having length of 6 using Lambda.
+
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+list(filter(lambda x:len(x)==6,lst1))
+
+# 26.Write a Python program to find numbers divisible by nineteen or thirteen from a list of numbers using Lambda.
+l= list(range(100))
+
+list(filter(lambda x: x%19==0 or x%13==0 ,l))
+
+# 27. Using zip() function and list() function, create a merged list of tuples from the two lists given.
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+age=[23,20,22,21]
+
+list(zip(lst1,age))
+
+# 28. First create a range from 1 to 8. Then using zip, merge the given list and the range together 
+# to create a new list of tuples.
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+lst2=range(1,9)
+list(zip(lst1,lst2))
+
+# 29. Using zip and dict functions create a dictionary which has its key-value pairs coming from lst1 and lst2.
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+lst2=range(1,9)
+dict(zip(lst1,lst2))
+
+
+# 30. Using zip, list and sorted functions create a sorted list of tuples from lst1 and lst2.
+lst1=["Aida", "Nazrin", "Valid", "Inara"]
+lst2=range(1,9)
+sorted(list(zip(lst1,lst2)))
