@@ -1,0 +1,287 @@
+--1. Show minimum, average and maximum salary in last 15 years according to job id.
+SELECT
+    MIN(salary),
+    round(AVG(salary), 2),
+    MAX(salary),
+    hire_date
+FROM
+    employees
+WHERE
+    EXTRACT(YEAR FROM sysdate) - EXTRACT(YEAR FROM hire_date) <= 15
+GROUP BY
+    job_id,
+    hire_date;
+
+--2. How many employees hired after 2005 for each department?
+SELECT
+    COUNT(DISTINCT employee_id) count_employees,
+    department_id
+FROM
+    employees
+WHERE
+    hire_date > '31-dec-2005'
+GROUP BY
+    department_id
+ORDER BY
+    department_id;
+    
+SELECT
+    COUNT(employee_id),
+    department_id
+FROM
+    employees
+WHERE
+    to_char(hire_date, 'YYYY') > 2005
+GROUP BY
+    department_id
+ORDER BY
+    department_id;
+    
+SELECT
+    COUNT(DISTINCT employee_id) count_employees,
+    department_id
+FROM
+    employees
+WHERE
+    EXTRACT(YEAR FROM hire_date) > 2005
+GROUP BY
+    department_id
+ORDER BY
+    department_id;
+    
+--3. Write a query to show departments in which the difference between maximum and minimum salary is greater than 5000.
+SELECT
+    department_id,
+    MAX(salary),
+    MIN(salary)
+FROM
+    employees
+GROUP BY
+    department_id
+HAVING
+    MAX(salary) - MIN(salary) > 5000
+ORDER BY
+    department_id;
+    
+--4. Display salaries of employees who has not commission pct according to departments (without using where).
+SELECT
+    department_id,
+    SUM(
+        CASE
+            WHEN commission_pct IS NULL THEN
+                salary
+            ELSE
+                0
+        END
+    ) salary
+FROM
+    employees
+GROUP BY
+    department_id
+ORDER BY
+    department_id;
+
+--5. How many people has job id with average salary between 3000 and 7000?
+SELECT
+    job_id,
+    COUNT(employee_id),
+    AVG(salary)
+FROM
+    employees
+GROUP BY
+    job_id
+HAVING
+    AVG(salary) BETWEEN 3000 AND 7000
+ORDER BY
+    AVG(salary);
+
+--6. Find number of employees with same name.
+SELECT
+    first_name,
+    COUNT(first_name)
+FROM
+    employees
+HAVING
+    COUNT(first_name) > 1
+group by first_name order by first_name;
+
+--7. How many people with the same phone code work in departments 50 and 90?
+SELECT
+    COUNT(*),
+    substr(phone_number, 1, 3) phone_code
+FROM
+    employees
+WHERE
+    department_id IN (
+        50,
+        90
+    )
+GROUP BY
+    substr(phone_number, 1, 3)
+HAVING
+    COUNT(*) > 1;
+    
+--8. Display departments with average number of employees more than 5 in spring and autumn.
+SELECT
+    round(AVG(employee_id), 0) count,
+    department_id
+FROM
+    employees emp
+WHERE (CASE
+    WHEN to_char(hire_date, 'mm') IN (12,1,2) THEN 'winter'
+    WHEN to_char(hire_date, 'mm') IN (3,4,5) THEN 'spring'
+    WHEN to_char(hire_date, 'mm') IN (6,7,8) THEN 'summer'
+    ELSE 'autumn' END) 
+    IN ('spring','autumn')
+GROUP BY
+    department_id
+HAVING
+    AVG(emp.employee_id) > 5;
+    
+    SELECT
+    department_id,
+    round(AVG(employee_id), 0) count
+FROM
+    hr.employees emp
+WHERE
+    EXTRACT(MONTH FROM hire_date) IN (3,4,5,9,10,11)
+GROUP BY
+    department_id
+HAVING
+    avg(DISTINCT employee_id) > 5
+ORDER BY
+    emp.department_id;
+    
+
+--9. How many employees work in departments which has maximum salary more than 5000?
+SELECT
+      COUNT(employee_id)
+  FROM
+      employees
+  GROUP BY
+      department_id
+  HAVING
+      MAX(salary) > 5000
+      
+--10. Change second letter of employees’ names with the last letter and display.
+SELECT
+    first_name,
+    substr(first_name, 1, 1)
+    || substr(first_name, - 1, 1)
+    || substr(first_name, 3, length(first_name) - 3)
+    || substr(first_name, 2, 1) newname
+FROM
+    employees;
+    
+    
+    
+    ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    
+    
+    --1. Display the first promotion year for each employee.
+SELECT
+    employee_id,
+    EXTRACT(YEAR FROM MIN(end_date)) first_promotion_year
+FROM
+    job_history
+GROUP BY
+    employee_id
+HAVING
+    COUNT(*) > 0;
+
+--2. Display location, city and department name of employees who have been promoted more than once.
+SELECT
+    employee_id,
+    department_name,
+    city,
+    l.location_id
+FROM
+    hr.job_history jh
+    LEFT JOIN hr.departments d ON jh.department_id = d.department_id
+    LEFT JOIN hr.locations l ON d.location_id = l.location_id
+GROUP BY
+    jh.employee_id,
+    department_name,
+    city,
+    l.location_id
+HAVING
+    COUNT(*) > 1;
+
+--3. Display minimum and maximum “hire_date” of employees work in IT and HR departments.
+SELECT
+    MIN(hire_date),
+    MAX(hire_date),
+    d.department_name
+FROM
+    employees     e
+    LEFT JOIN departments   d ON e.department_id = d.department_id
+WHERE
+    d.department_name IN (
+        'IT',
+        'Human Resources')
+GROUP BY
+    department_name;
+    
+--4. Find difference between current date and hire dates of employees after sorting them by hire date, then show difference in days, months and years.
+SELECT
+    sysdate,
+    hire_date,
+    EXTRACT(DAY FROM sysdate) - EXTRACT(DAY FROM hire_date) day_diff,
+    EXTRACT(MONTH FROM sysdate) - EXTRACT(MONTH FROM hire_date) mon_diff,
+    EXTRACT(YEAR FROM sysdate) - EXTRACT(YEAR FROM hire_date) year_diff
+FROM
+    employees
+ORDER BY
+    hire_date;
+
+--5. Find which departments used to hire earliest/latest.
+select department_id,hire_date
+from employees
+where hire_Date=(select min(hire_date) from employees)
+union
+select department_id,hire_date
+from employees 
+where hire_date=(select max(hire_date) from employees);
+
+--6. Find the number of departments with no employee for each city.
+SELECT
+    COUNT(DISTINCT d.department_name) number_of_departments
+FROM
+    departments d
+    LEFT JOIN employees e ON d.department_id = e.department_id
+    LEFT JOIN locations l ON l.location_id = d.location_id
+WHERE
+    employee_id IS NULL;
+    
+--7. Create a category called “seasons” and find in which season most employees were hired.
+Select *
+from (Select  
+    case
+        when extract(month from hire_date) in (12,1,2) then 'winter'
+        when extract(month from hire_date) in (3,4,5) then 'spring'
+        when extract(month from hire_date) in (6,7,8) then 'summer'
+        else 'autumn'
+    end as seasons,
+    count(employee_id) Number_of_employees
+from employees
+group by case
+        when extract(month from hire_date) in (12,1,2) then 'winter'
+        when extract(month from hire_date) in (3,4,5) then 'spring'
+        when extract(month from hire_date) in (6,7,8) then 'summer'
+        else 'autumn'
+    end)
+order by Number_of_employees;
+
+--8. Find the cities of employees with average salary more than 5000.
+SELECT
+    city,
+    round(AVG(salary)) avg_salary
+FROM
+    employees e
+    LEFT JOIN hr.departments d ON e.department_id = d.department_id
+    LEFT JOIN hr.locations l ON d.location_id = l.location_id
+GROUP BY
+    city
+HAVING
+    AVG(salary) > 5000;
