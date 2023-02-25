@@ -1,0 +1,121 @@
+#1. Create a vector with values ranging from 15 to 55 and print all values except the first and last.
+
+import numpy as np
+
+x=np.arange(15,56)
+
+print(x[1:-1])
+
+#2. Create a 3X4 array using np.full().
+
+np.full((3,4), [1,2,3,4])
+
+#3. Create a 3x3 matrix filled with values from 10 to 18. Use np.arange() and np.reshape().
+
+a=np.arange(10,19)
+
+a.reshape(3,3)
+
+#4. Create a 5x5 zero matrix with elements on the main diagonal equal to 1, 2, 3, 4, 5 using np.diag().
+
+a=np.diag([1,2,3,4,5])
+
+a
+
+#5. Create a null vector of size 10 using np.zeros() and update sixth value to 11.
+
+a=np.zeros(10)
+
+a[5]=11
+
+a
+
+#6. Convert an array to a float type using np.asfarray().
+
+a=np.arange(10)
+
+np.asfarray(a)
+
+#7. Swap columns in a given array.
+
+a=np.arange(12).reshape(3,4)
+
+a[:,[3,2,1,0]]=a[:, [0,1,2,3]]
+
+a
+
+'''
+8. Capitalize the first letter, lowercase, uppercase, swapcase, title-case of all the elements of a
+given array. Use np.char.capitalize(), np.char.lower(), np.char.upper(),
+np.char.swapcase(), np.char.title().
+'''
+
+a = np.array(['Aida', 'Mammadzada'])
+
+b = np.char.capitalize(a)
+c = np.char.lower(a)
+d = np.char.upper(a)
+e = np.char.swapcase (a)
+f = np.char.title(a)
+
+print(b,c,d,e,f, sep = '\n')
+
+#Get the dates of yesterday, today and tomorrow using np.datetime64() and np.timedelta64().
+
+yesterday = np.datetime64('Today', 'D') - np.timedelta64(2, 'D')
+today = np.datetime64('Today', 'D')
+tomorrow = np.datetime64('Today', 'D') +  np.timedelta64(2, 'D')
+
+print(yesterday,today,tomorrow, sep = '\n')
+
+#10. Append values to the end of an array using np.append().
+#Original array: [10, 20, 30]
+#Expected Output: [10 20 30 40 50 60 70 80 90]
+
+a = np.array([10,20,30])
+b = np.array([40,50,60,70,80,90])
+c = np.append(a, b)
+
+c
+
+import pandas as pd
+
+df=pd.read_excel('cars.xlsx')
+
+df.head()
+
+df.info()
+
+#1. Show relationship between highway and city miles per gallon.
+#a. Use scatter in matplotlib.
+#b. Interpret how are variables correlated according to scatter.
+
+from matplotlib import pyplot
+
+pyplot.scatter('hwy','cty', data=df,c='m')
+
+#2. Show distributions and scatters between all variables. While hue equals to type of
+#drive train which variables have the lowest and the highest correlation?
+#Find according to scatterplot.
+
+import seaborn as sns
+
+sns.pairplot(df)
+
+#3. Which type of car is most frequent in dataset? Show by using countplot.
+
+sns.countplot(x = 'model', data = df)
+
+#4. Display number of cylinders for each drive train in bar chart. Which drive train is the most frequent?
+
+sns.barplot(x = 'drv', y='cyl', data=df);
+
+
+#5. Visualize engine displacement by each class using boxplot. Do the same thing in violinplot.
+
+sns.boxplot(x = "class", y="displ" , data=df);
+
+
+
+sns.violinplot(x = 'class', y= 'displ', data=df);
+
