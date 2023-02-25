@@ -1,0 +1,148 @@
+import numpy as np
+import pandas as pd
+
+print('salam')
+
+#1. Import dataset as FIFA.
+#2. Show first 12 entries of dataset.
+df=pd.read_csv('fifa19 (1).csv')
+df.head(12)
+
+#3. Get information about dataset.
+df.info()
+
+#4. Show the number of observations in dataset.
+
+df.shape
+
+#5. Print column names.
+
+df.columns
+
+#6. Show 5000th observation.
+
+df.iloc[4999]
+
+#7. Select user_id column.
+
+df['ID']
+
+#8. Sort teams by Club and Name columns.
+
+df.sort_values(['Club','Name'])
+
+#9. Filter Players whose Overall score is more than 90.
+
+df[df['Overall']>90][['Name']]
+
+#10. Remove 'Unnamed:0' column.
+
+df.drop('Unnamed: 0', axis=1, inplace=True)
+
+#11. How many distinct Positions exist in dataset?
+
+df['Position'].nunique()
+
+#12. Show null values.
+
+df.isnull().sum()
+
+#13. Fill empty values in 'Release Clause' column with 'unknown'.
+
+df['Release Clause'].fillna('unknown')
+
+#14. Find mean of Age.
+
+df['Age'].mean()
+
+#15. Find maximum of Shot Power.
+
+df['ShotPower'].max()
+
+#16. Show footballer has maximum Shot Power.
+
+df[df['ShotPower']==df['ShotPower'].max()]['Name']
+
+#17. Describe Data.
+
+df.describe()
+
+
+import numpy as np
+import pandas as pd
+
+----------------------------------------------------------------
+
+#1. Show first 7 observations in dataset.
+
+df=pd.read_csv('train.csv')
+
+df.head(7)
+
+
+
+#2. Check if there are any missing values.
+
+df.isnull().sum().sum()
+
+#3. Find mean of each variable according to target.
+
+df.groupby('target').mean()
+
+#4. Count number of values for each target.
+
+df['target'].value_counts()
+
+
+
+#5. Remove ID_code column.
+
+df.drop('ID_code', axis=1)
+
+#6. Get statistical summary for each variable.
+#a. Give interpretation for std, min, max, mean.
+#b. Show mean of var_0 by using indexing.
+
+df.describe().T
+
+df.iloc[:,[2]].mean()
+
+#7. Filter var_0 variable from minimum to mean.
+
+df[df['var_0'] < df['var_0'].mean()]
+
+#8. Filter var_6 greater than 5 and var_196 less than 2.
+
+df[(df['var_6']>5) & (df['var_196']<2)]
+
+#9. Show observations between 20000 and 30000 for 11th column.
+
+df.iloc[20000:30000,[10]]
+
+'''
+10. Create features list including variables from var_0 to var_9.
+a. Find correlations in features.
+b. Sort most correlated variables in features.
+c. Show top 10 most correlated variables in features.
+'''
+
+a = df.iloc[:, 2:12]
+a
+
+# Sort most correlated variables in features. 
+a.corr().abs().unstack().sort_values(ascending=False)
+
+
+#11. Remove outliers from dataset.
+Q1=np.percentile(df['var_5'],25)
+Q3=np.percentile(df['var_5'],75)
+
+IQR=Q3-Q1
+
+
+l=Q1-1.5*IQR
+l2=Q3+1.5*IQR
+
+new_df=df[(df['var_5']>l) & (df['var_5']<l2)]
+new_df
+
