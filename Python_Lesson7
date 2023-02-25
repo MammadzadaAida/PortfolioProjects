@@ -1,0 +1,245 @@
+# Week 4 Day 1 Case study - BS4
+## Shahin Mammadov
+
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+URL = 'https://www.reddit.com/r/gameofthrones/'
+headers = {'User-Agent': 'Chrome/90.0.4430.93'}
+r = requests.get(URL, headers=headers)
+
+soup = BeautifulSoup(r.content, "html.parser")
+
+posts_each = soup.find_all('h3', attrs = {'class':'_eYtD2XCVieq6emjKBH3m'})
+votes_each = soup.find_all('div', attrs = {'class':'_1rZYMD_4xY3gRcSS3p8ODO _3a2ZHWaih05DgAOtvu6cIo'})
+dates_each = soup.find_all('span', attrs = {'class':'_2VF2J19pUIMSLJFky-7PEI'})
+links_each = soup.find_all('a', attrs = {'class':'SQnoC3ObvgnGjWt90zD9Z _2INHSNB8V5eaWp4P0rY_mE'})
+
+posts = []
+votes = []
+dates = []
+links = []
+
+for row in posts_each:
+    posts.append(row.get_text()) 
+
+for row in votes_each:
+    votes.append(row.get_text()) 
+
+for row in dates_each:
+    dates.append(row.get_text()) 
+
+for row in links_each:
+    links.append("https://www.reddit.com/" + row['href'])
+
+d = {'posts': posts, 'votes': votes, 'date': dates, 'link': links}
+df = pd.DataFrame(data=d)
+df
+
+---------------------------------
+
+
+'''
+The data contains the following columns:
+
+- 'Avg. Area Income': Avg. Income of residents of the city house is located in.
+- 'Avg. Area House Age': Avg Age of Houses in same city
+- 'Avg. Area Number of Rooms': Avg Number of Rooms for Houses in same city
+- 'Avg. Area Number of Bedrooms': Avg Number of Bedrooms for Houses in same city
+- 'Area Population': Population of city house is located in
+- 'Price': Price that the house sold at
+- 'Address': Address for the house
+'''
+
+import pandas as pd
+
+data = pd.read_csv('USA_Housing.csv')
+
+data.info()
+
+data.head()
+
+ Looking at the task, we know that our dependent variable is price and the rest are independent variables, so we assign y to price and the rest to x. We will also exclude Address as the linear regression model will not be able to use a variable with text info.
+
+y = data['Price']
+
+X = data[['Avg. Area Income', 'Avg. Area House Age', 'Avg. Area Number of Rooms',
+               'Avg. Area Number of Bedrooms', 'Area Population']]
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
+
+from sklearn.linear_model import LinearRegression
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+from sklearn import metrics
+import numpy as np
+R2 = metrics.r2_score(y_test, y_pred)
+n = X_test.shape[0]
+p = X_test.shape[1]
+
+print('R^2:', R2)
+print('Adjusted R^2:', 1 - metrics.r2_score(y_test, y_pred))
+print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))
+print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+
+coeff_df = pd.DataFrame(regressor.coef_,X.columns,columns=['Coefficient'])
+coeff_df
+
+regressor.coef_
+
+
+------------------------------------------------------
+
+
+import pandas as pd
+
+data = pd.read_csv("covid_19_data.csv")
+
+data.head()
+
+data.info()
+
+data.isnull().mean()
+
+data['ObservationDate'] = pd.to_datetime(data['ObservationDate'])
+
+data['ObservationDate'][0]
+
+data.drop(['SNo', 'Province/State', 'Country/Region', 'Last Update'], axis = 1, inplace = True)
+
+data.head()
+
+daily_observation = data.groupby('ObservationDate').sum()
+daily_observation.head()
+
+daily_observation['Infected'] = daily_observation['Confirmed'] - daily_observation['Recovered'] - daily_observation['Deaths']
+daily_observation = daily_observation.reset_index()
+daily_observation.head()
+
+daily_observation['which day'] = (daily_observation['ObservationDate'] - daily_observation['ObservationDate'].min()).dt.days+1
+daily_observation.head()
+
+import seaborn as sns
+from matplotlib import pyplot as plt
+
+sns.set({'figure.figsize':(16,9)})
+sns.scatterplot(x='which day', y='Confirmed', data=daily_observation)
+plt.show()
+
+X = daily_observation.loc[:,['which day']].values.reshape(-1,1)
+y = daily_observation['Infected'].values.reshape(-1,1)
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
+
+from sklearn.linear_model import LinearRegression
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+regressor.score(X_test, y_test)
+
+from sklearn import metrics
+import numpy as np
+R2 = metrics.r2_score(y_test, y_pred)
+
+print('R^2:', R2)
+print('Adjusted R^2:', 1 - metrics.r2_score(y_test, y_pred))
+print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))
+print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+
+max_day = daily_observation['which day'].max()
+future_predict = np.arange(max_day+1, max_day+7).reshape(-1,1)
+regressor.predict(future_predict)
+
+plt.scatter(X_test, y_test)
+plt.plot(X_test, y_pred)
+plt.show()
+
+X = daily_observation.loc[:,['which day']].values.reshape(-1,1)
+y = daily_observation['Confirmed'].values.reshape(-1,1)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+regressor.score(X_test, y_test)
+
+R2 = metrics.r2_score(y_test, y_pred)
+
+print('R^2:', R2)
+print('Adjusted R^2:', 1 - metrics.r2_score(y_test, y_pred))
+print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))
+print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+
+regressor.predict(future_predict)
+
+plt.scatter(X_test, y_test)
+plt.plot(X_test, y_pred)
+plt.show()
+
+X = daily_observation.loc[:,['which day']].values.reshape(-1,1)
+y = daily_observation['Deaths'].values.reshape(-1,1)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+regressor.score(X_test, y_test)
+
+R2 = metrics.r2_score(y_test, y_pred)
+
+print('R^2:', R2)
+print('Adjusted R^2:', 1 - metrics.r2_score(y_test, y_pred))
+print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))
+print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+
+regressor.predict(future_predict)
+
+plt.scatter(X_test, y_test)
+plt.plot(X_test, y_pred)
+plt.show()
+
+X = daily_observation.loc[:,['which day']].values.reshape(-1,1)
+y = daily_observation['Recovered'].values.reshape(-1,1)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+regressor.score(X_test, y_test)
+
+R2 = metrics.r2_score(y_test, y_pred)
+
+print('R^2:', R2)
+print('Adjusted R^2:', 1 - metrics.r2_score(y_test, y_pred))
+print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))
+print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+
+regressor.predict(future_predict)
+
+plt.scatter(X_test, y_test)
+plt.plot(X_test, y_pred)
+plt.show()
